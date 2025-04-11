@@ -85,22 +85,61 @@ Page({
   },
 
   // 保存登录状态
-saveLoginState(token, userId) {
-  try {
-    // 确保 token 是字符串
-    if (typeof token !== 'string') {
-      console.error('Invalid token type:', typeof token);
+  saveLoginState(token, userId) {
+    try {
+      // 严格的类型检查和转换
+      if (!token || !userId) {
+        console.error('Invalid token or userId:', { token, userId });
+        return false;
+      }
+  
+      // 确保都是字符串类型
+      const tokenStr = String(token).trim();
+      const userIdStr = String(userId).trim();
+  
+      if (!tokenStr || !userIdStr) {
+        console.error('Empty token or userId after conversion');
+        return false;
+      }
+  
+      console.log('Saving login state:', { token: tokenStr, userId: userIdStr });
+  
+      // 清除旧数据
+      try {
+        wx.removeStorageSync('token');
+        wx.removeStorageSync('user_id');
+      } catch (e) {
+        console.error('Error clearing old data:', e);
+      }
+  
+      // 保存新数据
+      try {
+        wx.setStorageSync('token', tokenStr);
+        wx.setStorageSync('user_id', userIdStr);
+  
+        // 验证
+        const savedToken = wx.getStorageSync('token');
+        const savedUserId = wx.getStorageSync('user_id');
+  
+        const isSuccess = savedToken === tokenStr && savedUserId === userIdStr;
+        console.log('Verification result:', { 
+          isSuccess, 
+          savedToken, 
+          savedUserId,
+          originalToken: tokenStr,
+          originalUserId: userIdStr
+        });
+  
+        return isSuccess;
+      } catch (e) {
+        console.error('Error saving new data:', e);
+        return false;
+      }
+    } catch (error) {
+      console.error('Fatal error in saveLoginState:', error);
       return false;
     }
-    wx.setStorageSync('token', token);
-    wx.setStorageSync('user_id', userId);
-    console.log('Login state saved:', { token, userId });
-    return true;
-  } catch (error) {
-    console.error('Error saving login state:', error);
-    return false;
-  }
-},
+  },
 
   // 账号登录
   handleAccountLogin() {

@@ -37,6 +37,7 @@
           src="/images/delete-icon.png" 
           class="trash-icon" 
           bindtap="deleteBill" 
+          data-id="{{item.id}}"
           data-index="{{index}}"
         />
       </view>
