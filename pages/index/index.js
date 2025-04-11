@@ -85,15 +85,22 @@ Page({
   },
 
   // 保存登录状态
-  saveLoginState(token, userId) {
-    try {
-      wx.setStorageSync('token', token);
-      wx.setStorageSync('user_id', userId);
-      console.log('Login state saved:', { token, userId }); // 添加日志
-    } catch (error) {
-      console.error('Error saving login state:', error); // 添加日志
+saveLoginState(token, userId) {
+  try {
+    // 确保 token 是字符串
+    if (typeof token !== 'string') {
+      console.error('Invalid token type:', typeof token);
+      return false;
     }
-  },
+    wx.setStorageSync('token', token);
+    wx.setStorageSync('user_id', userId);
+    console.log('Login state saved:', { token, userId });
+    return true;
+  } catch (error) {
+    console.error('Error saving login state:', error);
+    return false;
+  }
+},
 
   // 账号登录
   handleAccountLogin() {

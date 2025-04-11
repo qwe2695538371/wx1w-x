@@ -76,20 +76,32 @@ Page({
   submitBill() {
     if (this.data.isDisabled || this.data.isSubmitting) return;
     
+    const token = wx.getStorageSync('token');
+    if (!token) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+        complete: () => {
+          wx.redirectTo({ url: '/pages/index/index' });
+        }
+      });
+      return;
+    }
+  
     this.setData({ isSubmitting: true });
     wx.showLoading({ title: '保存中...' });
-
+  
     const billData = {
       category: this.data.fenlei,
       amount: parseFloat(this.data.amount),
       timestamp: new Date(this.data.date).toISOString()
     };
-
+  
     wx.request({
       url: 'http://127.0.0.1:5000/api/bills',
       method: 'POST',
       header: {
-        'Authorization': `Bearer ${this.data.token}`,
+        'Authorization': 'Bearer ' + token,
         'Content-Type': 'application/json'
       },
       data: billData,

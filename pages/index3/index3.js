@@ -50,11 +50,13 @@ Page({
   loadBills() {
     wx.showLoading({ title: '加载中...' });
     
+    // 修改这里：确保 Authorization header 格式正确
     wx.request({
       url: 'http://127.0.0.1:5000/api/bills',
       method: 'GET',
       header: {
-        'Authorization': `Bearer ${this.data.token}`
+        'Authorization': 'Bearer ' + this.data.token,  // 注意空格
+        'Content-Type': 'application/json'
       },
       success: res => {
         wx.hideLoading();
