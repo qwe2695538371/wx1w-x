@@ -1,0 +1,45 @@
+<!--pages/index3/index3.wxml-->
+<view class="container">
+  <!-- 总支付信息块 -->
+  <view class="total-box">
+    <view class="total-left">
+      <text class="total-label">总支出</text>
+      <text class="total-amount">¥{{total}}</text>
+    </view>
+    <view>
+    <button bindtap="navigateToAddBill" class="add-btn">
+        <image src="/images/add-icon.png" class="btn-icon"/>
+    记一笔
+    </button>
+</view>
+  </view>
+
+  <!-- 记账列表 -->
+  <view class="bill-list">
+    <view 
+      wx:for="{{bills}}" 
+      wx:key="index" 
+      class="bill-item"
+    >
+    <image 
+    src="/images/{{item.icon || 'default'}}.png" 
+    class="category-icon"
+    lazy-load="true"
+    mode="aspectFit"
+  />
+      <view class="bill-info">
+        <text class="category">{{item.category}}</text>
+        <text class="time">{{item.time}}</text>
+      </view>
+      <view class="bill-right">
+        <text class="amount">¥{{item.amount}}</text>
+        <image 
+          src="/images/delete-icon.png" 
+          class="trash-icon" 
+          bindtap="deleteBill" 
+          data-index="{{index}}"
+        />
+      </view>
+    </view>
+  </view>
+</view>
