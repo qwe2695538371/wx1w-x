@@ -65,13 +65,46 @@ def validate_amount(value):
         raise ValueError("无效的金额格式")
 
 
-# --- 认证路由 ---
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.json
+    if not data or not all(k in data for k in ['username', 'password']):
+        return jsonify({
+            'success': False,
+            'message': '缺少必要参数'
+        }), 400
+
+    try:
+        user = User.query.filter_by(username=data['username']).first()
+        if user and check_password_hash(user.password_hash, data['password']):
+            access_token = create_access_token(identity=user.id)
+            return jsonify({
+                'success': True,
+                'access_token': access_token,
+                'user_id': user.id
+            }), 200
+        else:
+            return jsonify({
+                'success': False,
+                'message': '用户名或密码错误'
+            }), 401
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': '登录失败，请稍后重试'
+        }), 500
+
+# 修改微信登录路由
 @app.route('/api/wx_login', methods=['POST'])
 def wx_login():
     try:
         code = request.json.get('code')
         if not code:
-            return jsonify(error="缺少code参数"), 400
+            return jsonify({
+                'success': False,
+                'message': '缺少code参数'
+            }), 400
 
         # 获取微信openid
         wx_url = f"https://api.weixin.qq.com/sns/jscode2session"
@@ -84,27 +117,43 @@ def wx_login():
         response = requests.get(wx_url, params=params)
 
         if response.status_code != 200:
-            return jsonify(error="微信服务不可用"), 502
+            return jsonify({
+                'success': False,
+                'message': '微信服务不可用'
+            }), 502
 
         wx_data = response.json()
         if 'errcode' in wx_data:
-            return jsonify(error=wx_data.get('errmsg')), 400
+            return jsonify({
+                'success': False,
+                'message': wx_data.get('errmsg')
+            }), 400
 
         openid = wx_data['openid']
         user = User.query.filter_by(openid=openid).first()
 
-        # 生成token
-        access_token = create_access_token(identity=user.id if user else None)
-
-        return jsonify({
-            "access_token": access_token,
-            "user_id": user.id if user else None,
-            "openid": openid,
-            "registered": bool(user)
-        }), 200
+        if user:
+            # 已注册用户，创建token
+            access_token = create_access_token(identity=user.id)
+            return jsonify({
+                'success': True,
+                'access_token': access_token,
+                'user_id': user.id,
+                'registered': True
+            }), 200
+        else:
+            # 未注册用户
+            return jsonify({
+                'success': True,
+                'openid': openid,
+                'registered': False
+            }), 200
 
     except Exception as e:
-        return jsonify(error=str(e)), 500
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
 
 
 # --- 账单路由 ---
