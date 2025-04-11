@@ -1,0 +1,133 @@
+/* pages/login/login.wxss */
+page {
+    height: 100%;
+    background: linear-gradient(180deg, #7a9dff 0%, #9335eb 100%);
+  }
+  .container{
+    height: 100vh;
+    display: flex;
+    justify-content: center; /* 垂直居中 */
+    align-items: center;     /* 新增：水平居中 */
+    padding: 20rpx;          /* 父容器边距，实现屏幕边缘空隙 */
+  }
+  .main {
+    width: 100%;
+    min-height: 64%;
+    padding: 60rpx 40rpx;
+    background: #fff;
+    border-radius: 24rpx;
+    border: 1rpx solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  
+  .money-icon {
+    width: 160rpx;  /* 根据设计稿调整 */
+    height: 160rpx; /* 保持与宽高一致 */
+    margin: 0rpx 0 80rpx;
+  }
+  
+  .wechat-btn {
+    height: 90rpx;
+    background: #09BB07;
+    color: white;
+    font-size: 30rpx;
+    border-radius: 45rpx;
+    margin-bottom: 40rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 40rpx;
+  }
+  .btn-icon {
+    width: 40rpx;
+    height: 40rpx;
+    margin-right: 20rpx;
+  }
+  .divider-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20rpx;
+  }
+  
+  .line {
+    flex: 1; /* 自动填充剩余空间 */
+    height: 2rpx;
+    background: #e0e0e0;
+  }
+  
+  .divider-text {
+    padding: 0 30rpx;
+    font-size: 28rpx;
+    color: #999;
+  }
+  .form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 40rpx;
+  }
+  
+  .input {
+    width: 90%;
+    height: 96rpx;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 48rpx;
+    padding: 0 32rpx;
+    font-size: 30rpx;
+  }
+  
+  .placeholder {
+    color: #B2B2B2;
+  }
+  
+  .account-btn {
+    width: 100%;
+    height: 96rpx;
+    background: #F2F2F2;
+    color: #666666;
+    font-size: 32rpx;
+    border-radius: 48rpx;
+    margin-top: 40rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* 正常状态 */
+.active-btn {
+    background: #1890ff !important;
+    color: #fff !important;
+    border-radius: 40rpx;
+    transition: all 0.3s ease;
+  }
+  
+  /* 禁用状态 */
+  .disabled-btn {
+    background: #f5f5f5 !important;
+    color: #cccccc !important;
+    cursor: not-allowed;
+  }
+  
+  /* 输入框提示文字 */
+  .placeholder {
+    color: #bfbfbf !important;
+    font-size: 28rpx;
+  }
+  
+  /* 去除按钮默认边框 */
+  button::after {
+    border: none !important;  /* 参考网页7、网页10 */
+  }
+  
+  /* 底部提示定位 */
+.footer {
+    position: absolute;
+    bottom: 50rpx;
+    width: calc(100% - 80rpx);
+    text-align: center;
+    color: #999;
+    font-size: 24rpx;
+  }
