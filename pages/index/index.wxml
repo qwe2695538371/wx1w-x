@@ -1,0 +1,31 @@
+<!-- pages/index/index.wxml -->
+<view class="container">
+<view class="main">
+  <!-- 人民币图标 -->
+    <image src="/images/logo.png" mode="" class="money-icon"/>
+  
+  <!-- 微信一键登录按钮 -->
+  <button class="wechat-btn" bindtap="handleWechatLogin">
+  <image src="/images/wechat-icon.png" class="btn-icon"/>
+  微信一键登录
+</button>
+  <view class="divider-container">
+  <view class="line"></view>
+  <text class="divider-text">或</text>
+  <view class="line"></view>
+</view>
+  <!-- 登录表单 -->
+  <view class="form">
+    <input class="input" placeholder="请输入用户名" placeholder-class="placeholder" bindinput="onUsernameInput"/>
+    <input class="input" password placeholder="请输入密码" placeholder-class="placeholder" bindinput="onPasswordInput"/>
+    <button 
+  class="account-btn {{isAccountBtnDisabled ? 'disabled-btn' : 'active-btn'}}" 
+  bindtap="handleAccountLogin"
+  disabled="{{isAccountBtnDisabled}}"
+>账号登录</button>
+  </view>
+  
+  <!-- 底部提示 -->
+  <view class="footer">首次登录请使用微信一键登录</view>
+</view>
+</view>
