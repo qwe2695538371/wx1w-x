@@ -22,8 +22,10 @@ CORS(app)  # 添加CORS支持
 # 配置数据库和JWT
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 app.config['JWT_SECRET_KEY'] = 'your-super-secret-key-2025'  # 生产环境应使用环境变量[1,4](@ref)
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=30)  # 延长token有效期
+app.config['JWT_ERROR_MESSAGE_KEY'] = 'message'  # 统一错误消息的 key
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
 app.config['JWT_HEADER_NAME'] = 'Authorization'
 app.config['JWT_HEADER_TYPE'] = 'Bearer'
@@ -56,6 +58,22 @@ class Bill(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 
+
+# 添加 JWT 回调函数
+@jwt.user_identity_loader
+def user_identity_lookup(user):
+    if isinstance(user, int):
+        return str(user)
+    return user
+
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data["sub"]
+    try:
+        user_id = int(identity)
+        return User.query.filter_by(id=user_id).first()
+    except (ValueError, TypeError):
+        return None
 # --- 辅助函数 ---
 def validate_amount(value):
     """金额验证逻辑[6](@ref)"""
@@ -68,6 +86,7 @@ def validate_amount(value):
         raise ValueError("无效的金额格式")
 
 
+# 修改登录函数
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
@@ -80,11 +99,12 @@ def login():
     try:
         user = User.query.filter_by(username=data['username']).first()
         if user and check_password_hash(user.password_hash, data['password']):
-            access_token = create_access_token(identity=user.id)
+            # 将用户ID转换为字符串
+            access_token = create_access_token(identity=str(user.id))
             return jsonify({
                 'success': True,
                 'access_token': access_token,
-                'user_id': user.id
+                'user_id': str(user.id)  # 确保返回字符串类型
             }), 200
         else:
             return jsonify({
@@ -136,12 +156,12 @@ def wx_login():
         user = User.query.filter_by(openid=openid).first()
 
         if user:
-            # 已注册用户，创建token
-            access_token = create_access_token(identity=user.id)
+            # 已注册用户，创建token，确保用户ID是字符串
+            access_token = create_access_token(identity=str(user.id))
             return jsonify({
                 'success': True,
                 'access_token': access_token,
-                'user_id': user.id,
+                'user_id': str(user.id),  # 确保返回字符串类型
                 'registered': True
             }), 200
         else:
@@ -160,20 +180,25 @@ def wx_login():
 
 
 # --- 账单路由 ---
+# 修改账单处理函数
 @app.route('/api/bills', methods=['POST', 'GET', 'DELETE'])
 @jwt_required()
 def handle_bills():
     try:
-        # 验证 JWT token
-        verify_jwt_in_request()
         current_user = get_jwt_identity()
+        print(f"Current user identity: {current_user}, type: {type(current_user)}")  # 添加调试日志
 
-        if not current_user:
+        try:
+            user_id = int(current_user)
+        except (ValueError, TypeError):
+            return jsonify({"error": "无效的用户身份"}), 401
+
+        if not user_id:
             return jsonify({"error": "无效的用户身份"}), 401
 
         if request.method == 'GET':
             try:
-                bills = Bill.query.filter_by(user_id=current_user) \
+                bills = Bill.query.filter_by(user_id=user_id) \
                     .order_by(Bill.timestamp.desc()) \
                     .all()
 
@@ -185,11 +210,13 @@ def handle_bills():
                 } for bill in bills]), 200
 
             except Exception as e:
+                print(f"Error getting bills: {str(e)}")  # 添加调试日志
                 db.session.rollback()
                 return jsonify({
                     "error": "获取账单失败",
                     "message": str(e)
                 }), 500
+
 
         elif request.method == 'DELETE':
             bill_id = request.args.get('id')
