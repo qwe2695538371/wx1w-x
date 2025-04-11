@@ -1,0 +1,103 @@
+/* pages/index3/index3.wxss */
+.container {
+    padding: 20rpx;
+    min-height: 100vh;
+    background: #f5f5f5;
+  }
+  
+  /* 总支出样式 */
+  .total-box {
+    background: linear-gradient(135deg, #C86DD7 0%, #5D26C1 100%);
+    border-radius: 16rpx;
+    padding: 40rpx;
+    color: white;
+    margin-bottom: 30rpx;
+  }
+  .total-left{
+      width: 100%;
+  }
+  
+  .total-label {
+    display: block;
+    font-size: 28rpx;
+    margin-bottom: 10rpx;
+  }
+  
+  .total-amount {
+    font-size: 40rpx;
+    font-weight: bold;
+    display: block;
+  }
+  
+  .add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.2);
+    border-radius: 40rpx;
+    font-size: 28rpx;
+    color: white;
+    padding: 0 40rpx;
+    height: 72rpx;
+    line-height: 72rpx;
+  }
+  .btn-icon {
+    width: 40rpx;
+    height: 40rpx;
+    margin-right: 20rpx;
+  }
+  
+  /* 记账项样式 */
+  .bill-list {
+    background: white;
+    border-radius: 16rpx;
+    overflow: hidden;
+  }
+  
+  .bill-item {
+    padding: 30rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1rpx solid #eee;
+    position: relative;
+  }
+  .category-icon {
+    display: inline;
+    width: 60rpx;
+    height: 60rpx;
+    margin-right: 20rpx;
+    flex-shrink: 0;
+  }
+  .bill-info {
+    flex: 1;
+  }
+  
+  .category {
+    font-size: 32rpx;
+    color: #333;
+    display: block;
+    margin-bottom: 10rpx;
+  }
+  
+  .time {
+    font-size: 24rpx;
+    color: #999;
+  }
+  .bill-right{
+    margin-bottom: 40rpx;
+    margin-right: 20rpx;
+  }
+  .amount {
+    font-size: 34rpx;
+    color: rgb(7, 233, 26);
+    margin-right: 20rpx;
+  }
+  
+  .trash-icon {
+    width: 40rpx;
+    height: 40rpx;
+    position: absolute;
+    right: 30rpx;
+    bottom: 30rpx;
+  }

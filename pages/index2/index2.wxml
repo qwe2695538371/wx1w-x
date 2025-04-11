@@ -1,0 +1,47 @@
+<!--pages/index2/index2.wxml-->
+<view class="container">
+  <!-- 标题 -->
+  <text class="title">完善账户信息</text>
+  
+  <!-- 输入区域 -->
+  <view class="input-group">
+    <view class="input-item">
+      <input 
+        bindinput="onUsernameInput" 
+        class="input-box" 
+        placeholder-class="placeholder" 
+        placeholder="请输入用户名"
+        value="{{username}}"
+      />
+    </view>
+    
+    <view class="input-item">
+      <input 
+        class="input-box" 
+        password 
+        placeholder-class="placeholder" 
+        placeholder="请输入密码"
+        bindinput="onPasswordInput"
+        value="{{password}}"
+      />
+    </view>
+
+    <view class="input-item">
+      <input 
+        class="input-box" 
+        password 
+        placeholder-class="placeholder" 
+        placeholder="请确认密码"
+        bindinput="onPasswordConfirmInput"
+        value="{{passwordConfirm}}"
+      />
+    </view>
+  </view>
+
+  <!-- 注册按钮 -->
+  <button 
+    class="submit-btn {{isFormValid ? 'active-btn' : 'disabled-btn'}}" 
+    bindtap="handleRegister"
+    disabled="{{!isFormValid}}"
+  >完成注册</button>
+</view>
